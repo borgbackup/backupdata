@@ -27,12 +27,15 @@ The input files are not modified on disk.
 This tool expects some data in the SRC directory, it could look like
 this, for example (test data is not included, please use your own data):
 
-234M	testdata/bin     # linux executable binaries
-245M	testdata/jpg     # photos
-101M	testdata/ogg     # music
-4.0K	testdata/sparse  # 1x 1GB empty sparse file, name must be "sparse"
-259M	testdata/src_txt # source code, lots of text files
-151M	testdata/tgz     # 1x tar.gz file
+::
+
+    234M  testdata/bin     # linux executable binaries
+    245M  testdata/jpg     # photos
+    101M  testdata/ogg     # music
+    4.0K  testdata/sparse  # 1x 1GB empty sparse file, name must be "sparse"
+    259M  testdata/src_txt # source code, lots of text files
+    151M  testdata/tgz     # 1x tar.gz file
+
 
 Make sure all the SRC data fits into memory as it will be read into and kept
 in RAM for better performance.
