@@ -46,7 +46,7 @@ make sure the src data fits into RAM as it will all be read into RAM,
 except the "sparse" file. you may put 1 sparse file in there, name it
 "sparse".
 
-the modified data will be sent to DST, make sure there is enough space there.
+the modified data will be written to DST, make sure there is enough space there.
 """
     data, size = read_testdata(src)
     print("Size of input data: %d" % size)
@@ -57,7 +57,6 @@ the modified data will be sent to DST, make sure there is enough space there.
 
 
 def read_testdata(src):
-
     """read all test data into memory"""
     data = {}  # relname -> binary file content
     size = 0
