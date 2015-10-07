@@ -34,9 +34,9 @@ SRC = 'testdata'
 DST = 'lotsofspace'
 
 @click.command()
-@click.argument('src', default=SRC)
-@click.argument('dst', default=DST)
-@click.option('--times', default=N,
+@click.argument('src')
+@click.argument('dst')
+@click.option('--times',
                 help="""how often do you want the test data to be duplicated?  it won't be
 exact duplicates to avoid deduplication.""")
 def main(src, dst, times):
