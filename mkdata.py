@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 Create lots of test data for backup scalability testing.
 
@@ -9,24 +10,50 @@ Copyright 2015 Thomas Waldmann <tw@waldmann-edv.de>
 Licensed under the BSD 3-clause license.
 """
 
+try:
+    import click
+except ImportError:
+    from mock import Mock
+    click = Mock()
+    def call(*args, **kargs):
+        def decorator(f):
+            return f
+        return decorator
+    click.command = call
+    click.argument = call
+    click.option = call
 import os
 import struct
-
-# how often do you want the test data to be duplicated?
-# it won't be exact duplicates to avoid deduplication.
-N = 5000
 
 # each BLK_SIZE bytes (or, if file is smaller, in the middle of the file),
 # we insert a counter into the output file to avoid creating a duplicate.
 BLK_SIZE = 65536
 
-# arrange some test src data in this directory
-# make sure it fits into RAM as it will all be read into RAM, except the
-# "sparse" file. you may put 1 sparse file in there, name it "sparse".
+N = 5000
 SRC = 'testdata'
-
-# where we put the output data, make sure there is enough space.
 DST = 'lotsofspace'
+
+@click.command()
+@click.argument('src')
+@click.argument('dst')
+@click.option('--times',
+                help="""how often do you want the test data to be duplicated?  it won't be
+exact duplicates to avoid deduplication.""")
+def main(src, dst, times):
+    """arrange some test src data in the SRC directory.
+
+make sure the src data fits into RAM as it will all be read into RAM,
+except the "sparse" file. you may put 1 sparse file in there, name it
+"sparse".
+
+the modified data will be written to DST, make sure there is enough space there.
+"""
+    data, size = read_testdata(src)
+    print("Size of input data: %d" % size)
+    print("Creating %d modified copies of this:" % times)
+    for i in range(0, times):
+        print("Writing %d of %d..." % (i+1, times))
+        modify_write_data(dst, data, i)
 
 
 def read_testdata(src):
@@ -76,15 +103,9 @@ def modify_write_data(dst, data, i, blk_size=BLK_SIZE):
                     pos += _blk_size
 
 
-def main(src, dst, n):
-    data, size = read_testdata(src)
-    print("Size of input data: %d" % size)
-    print("Creating %d modified copies of this:" % n)
-    for i in range(0, n):
-        print("Writing %d of %d..." % (i+1, n))
-        modify_write_data(dst, data, i)
-
-
 if __name__ == '__main__':
-    main(SRC, DST, N)
+    if isinstance(click, Mock):
+        main(SRC, DST, N)
+    else:
+        main()
 
